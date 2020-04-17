@@ -1,6 +1,6 @@
 module Data.AddressBook where
 
-import Prelude
+import Prelude 
 
 import Control.Plus (empty)
 import Data.List (List(..), filter, head, null, nubBy)
@@ -19,7 +19,6 @@ type Address =
 -- Defines a type synonym 'Entry'
 -- Equivalent to the type on the right of the equals
 -- a record-type with three fields.
-
 type Entry = 
     { firstName :: String
     , lastName :: String
@@ -51,34 +50,24 @@ emptyBook = empty
 insertEntry :: Entry -> AddressBook -> AddressBook
 insertEntry = Cons 
 -- Here eta conversion is applied
--- insertEntry is just Cons on lists
+-- InsertEntry is just Cons on lists!
 
 findEntry :: String -> String -> AddressBook -> Maybe Entry
 findEntry firstName lastName = head <<< filter filterEntry
-    where -- function within a function (def, def?)
+    where -- function definition inside local scope
     filterEntry :: Entry -> Boolean
     filterEntry e = e.firstName == firstName && e.lastName == lastName
 
 
 {- 
 Ex 1
-
 head :: AddressBook -> Maybe Entry
-
 filter :: filterEntry -> AddressBook -> AddressBook
-
 filterEntry :: Entry -> Boolean
 
 Entry is a List element, Entry -> Boolean is the specialization of 
 (a -> Boolean) which takes a list element (a) and returns
 a Boolean
-
-
---- so
-
-head <<< filter filterEntry returns Maybe Entry
-
-String String AddressBook are the arguments of findEntry
 -}
 
 
@@ -90,14 +79,8 @@ findEntryByStreet streetName = filter filterEntry >>> head
     filterEntry :: Entry -> Boolean
     filterEntry e = e.address.street == streetName
 
-{- 
-see exercises
--}
-
 
 -- Ex 3
-
--- working
 isInBook :: String -> String -> AddressBook -> Boolean
 isInBook firstName lastName book = not null $ filter filterEntry book
 -- isInBook firstName lastName = not <<< null <<< filter filterEntry 
@@ -105,33 +88,21 @@ isInBook firstName lastName book = not null $ filter filterEntry book
      filterEntry :: Entry -> Boolean
      filterEntry entry = entry.firstName == firstName && entry.lastName == lastName
 
-{- 
-for another day 
--- Let's try to be more type explicit
--- https://pursuit.purescript.org/packages/purescript-newtype/2.0.0/docs/Data.Newtype
---newtype Name = Name String
---newtype Surname = Surname String
-
-
-isInBook :: Name -> Surname -> AddressBook -> Boolean
-isInBook (Name n) (Surname s) b = not null $ filter filterEntry b
-    where 
-    filterEntry :: Entry -> Boolean
-    filterEntry e = e.firstName == n && e.lastName == s
-
--- difference between type and newtype? 
--}
-
 
 -- Ex 4
--- Takes an addressbook and, using the provided function 
--- (here, sameEntry) to determine equality, removes duplicates
--- > :type nubBy
---   forall a. (a -> a -> Boolean) -> List a -> List a
--- https://pursuit.purescript.org/packages/purescript-lists/5.4.1/docs/Data.List#v:nubBy
--- Returns a new book with duplicates removed
 removeDuplicates :: AddressBook -> AddressBook
--- removeDuplicates book = nubBy isSameEntry book
+    {-
+    Takes an addressbook and, using the provided function 
+    (in our case, isSameEntry) to determine equality, removes duplicates.
+    > :type nubBy
+    forall a. (a -> a -> Boolean) -> List a -> List a
+    https://pursuit.purescript.org/packages/purescript-lists/5.4.1/docs/Data.List#v:nubBy
+    
+    Returns a new book with duplicates removed
+
+    Equivalent to (before eta reduction)
+    removeDuplicates book = nubBy isSameEntry book
+    -}
 removeDuplicates = nubBy isSameEntry
     where 
     isSameEntry :: Entry -> Entry -> Boolean

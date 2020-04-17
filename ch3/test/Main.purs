@@ -24,8 +24,8 @@ addressbook = insertEntry entry emptyBook
 -- Main
 main :: Effect Unit
 main = do
-  assert (findEntry "John" "Smith" addressbook == Just { address: { city: "Faketown", state: "CA", street: "123 Fake St." }, firstName: "John", lastName: "Smith" })
-  assert (findEntryByStreet "123 Fake St." addressbook == Just { address: { city: "Faketown", state: "CA", street: "123 Fake St." }, firstName: "John", lastName: "Smith" })
+  assert (findEntry "John" "Smith" addressbook == Just entry)
+  assert (findEntryByStreet "123 Fake St." addressbook == Just entry)
   assert (isInBook "John" "Smith" addressbook == true)
   -- log "🍝"
   -- log "You should add some tests."
