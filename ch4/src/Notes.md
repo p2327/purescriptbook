@@ -89,4 +89,87 @@ Does this mean head acts / is defined only for the first element of an array, he
 -- Infix operator <$>
 > (\n -> n + 1) <$> [1, 2]
 [2,3]
+
+-- <$> in an alisa for map and can be applied by enclosign in parentheses
+> (<$>) (\n -> n + 1) [1, 2]
+[2,3]
+
+-- .. is defined as an alias for range in Data.Array
+> import Data.Array
+> range 1 5
+[1,2,3,4,5]
+
+> 1 .. 5
+[1,2,3,4,5]
 ```
+
+#### Filtering operator
+
+What purpuse has the numebr in `infix 8 range as ..`, why 8? * is precedence, what does that mean?
+Is it arbitrary?
+```
+#(..)Source
+Operator alias for Data.Array.range (non-associative / precedence 8)
+
+An infix synonym for range.
+
+2 .. 5 = [2, 3, 4, 5]
+```
+From the docs[...](https://github.com/purescript/documentation/blob/master/language/Syntax.md)
+*Precedence*
+Precedence determines the order in which operators are bracketed. Operators with a higher precedence will be bracketed earlier. For example, take * and + from Prelude. * is precedence **7**, whereas + is precedence **6**. Therefore, if we write: `2 * 3 + 4`  is bracketed as follows `(2 * 3) + 4`. 
+
+
+#### Array Comprehensions
+
+Python list comprehension
+```python
+print([[i, j] for i in range(1, 3) for j in range(i, 3)])
+```
+
+Purescript intuition
+```
+> :paste
+
+takes from 1 to n for each i, in the range from 1 to n, so i see repeats
+> :paste    
+… pairs' n =
+… -- Takes an i and a j within the n range and map construct [i, j]
+…     concatMap (\i -> map (\j -> [i, j]) (1 .. n)) (1 .. n)
+```
+
+Purescript result
+```
+> :paste 
+… pairs''' n = concatMap (\i -> map (\j -> [i, j]) (i .. n)) (1 .. n) 
+…
+> import Data.Foldable
+> factors n = filter (\pair -> product pair == n) (pairs''' n)
+> factors 10
+[[1,10],[2,5]]
+```
+
+Python version
+```python
+print([[i, j] for i in range(1, 11) for j in range(i, 11) 
+      if i*j == 10])
+```
+
+**`Do` notation**
+
+We can improve readibility of the code using *do notation*:
+```
+factors :: Int -> Array (Array Int)
+factors n = filter (\xs -> product xs == n) $ do
+  i <- 1 .. n -- Binds the element of an array to a name (via <-)
+  j <- i .. n
+  pure [i, j] -- Does not bind element of an array
+```
+
+Do notation type of expressions:
+- Bind elements of an array to a name using `<-`.
+- Do not bind elements of the array to names, e.g. `pure [i, j]`.
+- Expressions which give names to expressions, using the `let` keyword.#
+
+By replacing the `<-` with the word *choose*, the above code can be read as
+> "choose an element i between 1 and n, then choose an element j between i and n, and return [i, j]".
