@@ -4,14 +4,16 @@ You can edit this file as you like.
 -}
 { name = "my-project"
 , dependencies =
-  [ "assert"
+  [ "arrays"
+  , "assert"
   , "console"
   , "effect"
-  , "lists"
-  , "newtype"
+  , "foldable-traversable"
+  , "maybe"
+  , "partial"
   , "psci-support"
+  , "strings"
   , "test-unit"
-  , "typelevel-prelude"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
