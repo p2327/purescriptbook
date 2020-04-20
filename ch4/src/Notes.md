@@ -245,7 +245,118 @@ array([0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0])
 ```
 
 
+#### Folds
+`foldable` represent a data structure that can be *folded*.
 
+In other languages this is often referred as *reduce*.
+For example, in Python
+```python
+>>> from functools import reduce
+>>> reduce(lambda x, y: x + y, [1, 2, 3, 4, 5])
+15
+```
+
+Purescript signatures:
+```
+> import Data.Foldable
+
+> :type foldl
+forall a b f. Foldable f => (b -> a -> b) -> b -> f a -> b
+
+> :type foldr
+forall a b f. Foldable f => (a -> b -> b) -> b -> f a -> b
+```
+
+In case of Arrays, we can write more specifically:
+```
+> :type foldl
+forall a b. (b -> a -> b) -> b -> Array a -> b
+
+> :type foldr
+forall a b. (a -> b -> b) -> b -> Array a -> b
+```
+
+Arguments:
+- `a` is the type of elements in our `Foldable` (here: a=`Int`, foldable=`Array`)
+- `b` is the type of an *accumulator*, which accumulates result as we traverse the data structure.
+- `(b -> a -> a)` and `(a -> b -> b)` are functions (left to right, and right to left, respectively) which are applied onto each element and the result *stored* into the accumulator. 
+
+For example, if we want to sum an array of integers, we will:
+1. Provide a function argument of signature `Int -> Int -> Int`, i.e. `(+)`
+2. Provide an initial value for the accumulator, here `0`
+3. Provide the `Array Int` we want to sum
+
+In other words, the function takes an Int (default value for accumulator b), an element a (Int) of an Array we wantto sum, and returns a Int (accumulator result b).
+
+With the above we can define a function that sums arrays of `Int`s like so:
+```
+> :paste
+… sumArray :: Array Int -> Int
+… sumArray = foldl (+) 0 
+…
+> sumArray (1..5)
+15
+```
+
+To understand l and r orientation:
+```
+-- foldl (b -> a -> b) (String -> Int -> String) empty string (default for b) Array a
+> foldl (\acc n -> acc <> show n) "" [1,2,3,4,5]
+"12345"
+
+-- foldr (a -> b -> b) (Int -> String -> String) empty string (default for b) Array a
+> foldr (\n acc -> acc <> show n) "" [1,2,3,4,5]
+"54321"
+```
+
+#### Tail recursion
+A call is in *tail position* when it is the last call made before a function returns. In other words, the *"return statement"* is only the recursive call and nothing else. 
+
+A recursive call in tail recursion can *skip* the frames before the last, so returning the value without moving back to do the computation for the answer.
+
+Tail recursive factorial in Purescript:
+```
+fact :: Int -> Int -> Int
+fact 0 total = total
+fact n total = fact (n - 1) (total * n)
+```
+
+Tail recursive factorial in Python;
+```python
+# Here the last frame has the result, and we just return that
+def factorial(n):
+    def fact_helper(n, total):
+        if n == 1:
+            return total
+        return fact_helper(n - 1, total * n)
+    return fact_helper(n, 1)
+```
+
+**Accumulators**
+One common way to turn a function which is not tail recursive into a tail recursive function is to use an accumulator parameter.
+
+An additional parameter which is added to a function which accumulates a return value, as opposed to using the return value to accumulate the result.
+
+To visualise, run this in Pythontutor and examine the frames and how the value is returned.
+```
+def factorial(n):
+    def fact_helper(n, total):
+        if n == 1:
+            return total
+        return fact_helper(n - 1, total * n)
+    return fact_helper(n, 1)
+    
+def factorial_ntr(n):
+    if n == 0 or n == 1:
+        return 1
+    else:
+        return n * factorial_ntr(n-1)
+
+print(factorial(5), factorial_ntr(5))
+```
+
+***Prefer fold to explicit recursion***
+Writing algorithms directly in terms of combinators such as map and fold has the added advantage of code simplicity - these combinators are well-understood, and as such, communicate the intent of the algorithm much better than explicit recursion
 
 #### Questions
 **Difference betrween apply and map**

@@ -5,6 +5,7 @@ import Prelude
 import Control.MonadZero (guard)
 import Data.Array
 import Data.Array.Partial (head, tail) 
+import Data.Foldable (foldl, foldr)
 import Data.Maybe (Maybe(..), maybe)
 -- import Data.List as DL
 import Partial.Unsafe (unsafePartial) 
