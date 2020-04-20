@@ -247,23 +247,86 @@ array([0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0])
 
 
 
-# Questions
-#### What difference betrween apply and map?
+#### Questions
+**Difference betrween apply and map**
 https://spacchetti.github.io/starsuit/Data.Functor.html#v:map
 `map :: forall a b. (a -> b) -> f a -> f b`
-`map` *can be used to turn functions a -> b into functions f a -> f b whose argument and return types use the type constructor* `f` ...i.e. map the function a onto b
+`map` *can be used to turn functions a -> b into functions f a -> f b whose argument and return types use the type constructor* `f`
+
+> So if I understand correctly, `map` takes a function `(a -> b)`, a `functor f a` (a type constructor, like `Maybe`) and applies the function and returns a new `functor f b` ?
+For example
+```
+> map (\n -> n + 3) (Just 5)
+(Just 8)
+
+> (\n -> n + 3) <$> Just 5
+(Just 8)
+```
 
 https://spacchetti.github.io/starsuit/Control.Apply.html#t:Apply
 `apply :: forall a b. f (a -> b) -> f a -> f b`
 `Apply` *can be used to lift functions of two or more arguments to work on values wrapped with the type constructor* `f`.
 
-#### Lifting
-- What does lift / lifting operation means? E.g. 'lift a function'
-- Give the applicative context, does pure then support lifting operatiosn for any number of function arguments? Or is it other functor part of `Applicative` type class? **Any examples**? 
+> So here I apply a function wrapped in a context (e.g. `Maybe` functor/type constructor) to a value or values wrapped with the same type constructor ?
+For example
+```
+> apply (Just (\n -> n + 3)) (Just 5)
+(Just 8)
+
+> Just (\n -> n + 3) <*> Just 5      
+(Just 8)
+```
+Does this means `Apply` is an `Applicative`? Going by the definition of applying a *function* wrapped in a context to a *value* wrapped in a context?
+
+How do I write these
+```
+> (*) <$> Just 5 <*> Just 3         
+(Just 15)
+
+> lift2 (*) (Just 5) (Just 3)       
+(Just 15)
+```
+with `apply`?
+
+Can anyone make some example of when this is used in practice?
+
+
+
+**Applicative**
+- Does `pure` support lifting opoperations for any number of function arguments? Or is it other functor(s) part of `Applicative` typeclass? **Any examples**? 
   - More generally: for a `functor` to be part of the `Applicative` class, it means it needs to have an operation that lift functions of two or more arguments in it (plus the additional laws as per docs)?
 
-#### Guard
-Is `Array` a Monad, and MonadZero at that?
+**Guard**
+Is `Array` a of MonadZero typeclass?
 
-#### Examples
-Wouldn't it be great to have examples in the documentation?
+I am not clear what happens here in the book:
+```
+> import Control.MonadZero
+
+> :type guard
+forall m. MonadZero m => Boolean -> m Unit
+```
+And then
+*we can assume that PSCi reported the following type:*
+`Boolean -> Array Unit`
+
+Does m stand for monad, so Array is a monad?
+
+**Examples**
+Wouldn't it be great to have additional concrete examples of functions usage in the documentation?
+
+Some have, some don't -- I think it would be great to enrich the docs. For example this is immediate:
+```
+cons
+cons :: forall a. a -> Array a -> Array a
+Attaches an element to the front of an array, creating a new array.
+
+cons 1 [2, 3, 4] = [1, 2, 3, 4]
+-- Note, the running time of this function is O(n).
+```
+
+**Naming**
+I find some naming quite obscure fro someone with little knowledge of Lisp / new to the language etc., e.g. unless you *know* what `snoc` means *a priori*, is hard to find a function in Pursuit to simply:
+>Append an element to the end of an array, creating a new array.
+
+Is there any way this could be improved, perhaps just tags in search?

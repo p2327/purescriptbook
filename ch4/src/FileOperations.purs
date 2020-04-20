@@ -131,17 +131,3 @@ factorizations :: Int -> Array (Array Int)
 factorizations = nub <<< map sort <<< allFactors
 
 
-tests :: Effect Unit
-tests = do
-  assert (isEven 0 == true)
-  assert (countEvenInts [0, 1, 2, 3] == 2)
-  assert (makeSquares [2, 3] == [4, 9])
-  assert (removeNeg [-1, 0, 1] == [0, 1])
-  assert ((<$?>) (_ >= 0) [-1, 0, 1] == [0, 1])
-  assert (factors 5 == [[1, 5]])
-  assert (isPrime 5 == true)
-  assert (isPrime 10 == false)
-  assert (isPrime' 5 == true)
-  assert (isPrime' 10 == false)
-  assert (cartesianProduct [1, 2] [3, 4] == [[1, 3], [1, 4], [2, 3], [2,4]])
-  assert (pythTriples 5 == [[3, 4, 5]])
