@@ -356,10 +356,41 @@ print(factorial(5), factorial_ntr(5))
 ```
 
 ***Prefer fold to explicit recursion***
-Writing algorithms directly in terms of combinators such as map and fold has the added advantage of code simplicity - these combinators are well-understood, and as such, communicate the intent of the algorithm much better than explicit recursion
+Writing algorithms directly in terms of combinators such as map and fold has the added advantage of code simplicity - these combinators are well-understood, and as such, communicate the intent of the algorithm much better than explicit recursion.
+
+For example, we can reverse an array using foldr:
+
+```
+> import Data.Foldable
+
+> :paste
+… reverse :: forall a. Array a -> Array a
+… reverse = foldr (\x xs -> xs <> [x]) []
+… ^D
+
+> reverse [1, 2, 3]
+[3,2,1]
+```
+
+With foldl
+```
+> :paste                                         
+… leftReverse :: forall a. Array a -> Array a     
+… leftReverse = foldl (\emptyA elem -> [elem] <> emptyA) []     
+…
+> leftReverse [1,2,3]                          
+[3,2,1]
+```
+Where 
+- emptyA is `b` of type `Array` of `a`, here `Array Int`
+- elem is `a` of type `Int`
+- default for `b` is `[]`
+- takes all (`forall`) elem of type `a` from an argument (here, [1, 2, 3])
+- returns an `Array of a`, which is type `b`
+
 
 #### Questions
-**Difference betrween apply and map**
+**Difference between apply and map**
 https://spacchetti.github.io/starsuit/Data.Functor.html#v:map
 `map :: forall a b. (a -> b) -> f a -> f b`
 `map` *can be used to turn functions a -> b into functions f a -> f b whose argument and return types use the type constructor* `f`
@@ -370,7 +401,7 @@ For example
 > map (\n -> n + 3) (Just 5)
 (Just 8)
 
-> (\n -> n + 3) <$> Just 5
+> (\n -> n + 3) <$> Just
 (Just 8)
 ```
 
