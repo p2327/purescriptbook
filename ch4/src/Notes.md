@@ -207,6 +207,45 @@ argumements are wrapped using `f`, `f (a -> b) -> f a -> f b`
 
 Since `Applicative` extends `Apply` which extends `Functor` with a zero argument lift ability, `Applicative functors` can be seen as support a lifting operation for any number of function arguments.
 
+**Apply and Map**
+
+`map :: forall a b. (a -> b) -> f a -> f b`
+
+`map` *can be used to turn functions a -> b into functions f a -> f b whose argument and return types use the type constructor* `f`
+
+> `map` takes a function `(a -> b)`, a `functor f a` (a type constructor, like `Maybe`) and applies the function and returns a new `functor f b`
+
+```
+> map (\n -> n + 3) (Just 5)
+(Just 8)
+
+> (\n -> n + 3) <$> Just 5
+(Just 8)
+```
+
+`apply :: forall a b. f (a -> b) -> f a -> f b`
+
+`Apply` *can be used to lift functions of two or more arguments to work on values wrapped with the type constructor* `f`.
+
+>  Apply a function wrapped in a context (e.g. `Maybe` functor/type constructor) to a value or values wrapped with the same type constructor. 
+
+```
+> apply (Just (\n -> n + 3)) (Just 5)
+(Just 8)
+
+> Just (\n -> n + 3) <*> Just 5      
+(Just 8)
+
+> import Data.Array
+> import Data.Maybe(Maybe(..), fromMaybe)
+> :paste
+… isEven :: Int -> Boolean
+… isEven n = mod n 2 == 0
+
+> a = [1, 2, 3]
+> apply (Just \x -> isEven x) (fromMaybe (head a) Nothing)  
+(Just false)
+```
 
 **Guards**
 We can move the `filter` function inside `do notation` by using the `guard` function.

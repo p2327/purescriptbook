@@ -7,7 +7,7 @@ import Data.Array
 -- import Data.Array.Partial (head, tail)
 import Data.Array.Partial as DAP -- import as DAP otherwise conflicts with Data.Array
 import Data.Foldable (foldl, foldr)
-import Data.Maybe (Maybe(..), maybe)
+import Data.Maybe (Maybe(..), maybe, fromMaybe)
 -- import Data.List as DL
 import Partial.Unsafe (unsafePartial) 
 import Test.Assert (assert)
@@ -21,6 +21,7 @@ isEven n = isEven $ n - 2
 
 
 -- Ex 2
+-- Using head from Data.Array.Partial wich returns a partial
 countEvenInts :: Array Int -> Int
 countEvenInts a =
     if null a
@@ -29,6 +30,17 @@ countEvenInts a =
              then 1 + countEvenInts (unsafePartial DAP.tail a)  -- If true, return 1 + countEven the rest of the array
              else countEvenInts (unsafePartial DAP.tail a)      -- Else, skip the count and do as above
 
+{-
+-- Ex 2
+-- using head from Data.Array which returns a Maybe 
+countEvenInts' :: Maybe (Array Int) -> Maybe Int
+countEvenInts' a =
+    if a == Nothing
+        then Nothing
+        else if apply (Just \x -> isEven x) <<< fromMaybe (head a) Nothing              -- Checks the array's head is even
+             then 1 + countEvenInts' (tail a)  -- If true, return 1 + countEven the rest of the array
+             else countEvenInts' (tail a)      -- Else, skip the count and do as above
+-}
 
 -- Ex 3 (1)
 makeSquares :: Array Int -> Array Int
