@@ -62,6 +62,7 @@ For example, consider:
 > location = {street:"Long drive", city:"Los Angeles"}
 > marl = {firstName: "Marl", lastName: "Smith", address: location}
 > john = {firstName: "John", lastName: "Green", job:"Sales"}
+> molly = {firstName: "Molly", lastName: "Green", address:{city: "Detroit", street:"123th Street"}
 > :type showPerson
 forall t6.
   { first :: String
@@ -78,6 +79,9 @@ forall t6.
 
 > showPerson' {first: "Marl", last: "Smith"}
 "Marl, Smith"
+
+> showPerson'' molly
+"Molly, Green"
 
 > showPerson {first: "Marl", last: "Smith", address:"123 Street"} 
 "Smith, Marl"
@@ -117,8 +121,9 @@ Functions which return a value for any combination of inputs are called total fu
 *PureScript keeps track of partial functions using the type system, and that we must explicitly tell the type checker when they are safe.*
 
 
-#### Algebraic data types
+#### Algebraic data types (ADTs)
 An algebraic data type is introduced using the`data` keyword, followed by the name of the new type and any type arguments. The type's constructors are defined after the equals symbol, and are separated by pipe characters (|).
+ADTs use Algebra to define the total number of values a given type can have.
 
 > The only way to consume a value of an algebraic data type is to use a pattern to match its constructor.
 
@@ -152,8 +157,22 @@ An algebraic data type is introduced using the`data` keyword, followed by the na
 > showText myText
 (Just "Wish you were here")
 
+> :paste                                               
+… anHaiku = Text p s
+…     where 
+…       p = Point { x: 5.0, y: 12.0 }
+…       s = "water boiling / forall a. a -> a / after the water"
+> showText anHaiku
+(Just "water boiling / forall a. a -> a / after the water")
+
 > showText conciseCircle
 Nothing
+
+> :paste                                               
+… anHaiku = Text p s
+…     where 
+…       p = Point { x: 5.0, y: 12.0 }
+…       s = "water boiling / forall a. a -> a / after the water"
 ```
 
 **Newtypes**

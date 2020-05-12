@@ -137,7 +137,7 @@ allFactors n = do
     i <- 1 .. (n - 1)      -- Choose an i in the Array of range 1 to n-1
     guard $ mod n i == 0   -- Mask for divisors of n 
     k <- allFactors i      -- Choose a k among the divisors (k is an Array) and call on i 
-    pure $ snoc k $ n / i -- Divide n by i, append to and return the array of k-s
+    pure $ snoc k $ n / i  -- Divide n by i, append to and return the array of k-s
 
 
 factorizations :: Int -> Array (Array Int)

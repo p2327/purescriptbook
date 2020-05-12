@@ -17,7 +17,7 @@ main =
         location = {street:"Long drive", city:"Los Angeles"}
         location' = {street: "Acacia Grove", city:"Boston"}
         marl = {firstName: "Marl", lastName: "Smith", address: location}
-        john = {firstName: "John", lastName: "Goof", address: location}
+        john = {firstName: "John", lastName: "Green", address: location}
         irv = {firstName: "Irvine", lastName: "Dolittle", address: location'}
  
       test "Matching address"

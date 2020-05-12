@@ -243,9 +243,17 @@ Since `Applicative` extends `Apply` which extends `Functor` with a zero argument
 … isEven n = mod n 2 == 0
 
 > a = [1, 2, 3]
+> fromMaybe (head a) Nothing
+(Just 1)
 > apply (Just \x -> isEven x) (fromMaybe (head a) Nothing)  
 (Just false)
 ```
+But also
+```
+> map (\x -> isEven x) (fromMaybe (head a) Nothing)         
+(Just false)
+```
+
 
 **Guards**
 We can move the `filter` function inside `do notation` by using the `guard` function.

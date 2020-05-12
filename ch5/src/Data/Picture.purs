@@ -33,6 +33,11 @@ showShape (Text loc text) =
 
 type Picture = Array Shape
 
+-- The Show implementation for shape is just showShape!
+-- See ch6 ex1
+instance showInstance :: Show Shape where
+    show = showShape
+
 showPicture :: Picture -> Array String
 showPicture = map showShape
 

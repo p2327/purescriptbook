@@ -25,9 +25,12 @@ type Person = {
 -- Untyped function
 showPerson { first: x, last: y } = y <> ", " <> x
 
--- Typed function does not allow | r fields
+-- Typed functions does not allow | r fields
 showPerson' :: { first :: String, last :: String }  -> String
 showPerson' { first: x, last: y } = x <> ", " <> y
+
+showPerson'' :: Person  -> String
+showPerson'' { firstName: x, lastName: y } = x <> ", " <> y
 
 
 -- Ex 1
