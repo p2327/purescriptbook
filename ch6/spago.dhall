@@ -11,6 +11,7 @@ You can edit this file as you like.
   , "maybe"
   , "psci-support"
   , "strings"
+  , "test-unit"
   , "tuples"
   ]
 , packages = ./packages.dhall
