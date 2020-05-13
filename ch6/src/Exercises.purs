@@ -29,11 +29,12 @@ data NonEmpty a
     = NonEmpty a (Array a)
 
 instance eqNonEmpty :: Eq a => Eq (NonEmpty a) where
-    eq (NonEmpty t xs) (NonEmpty t' xs') = (eq t t') && (eq xs xs')
+    eq (NonEmpty x xs) (NonEmpty y ys) = (eq x y) && (eq xs ys)
 
 instance showNonEmpty :: Show a => Show (NonEmpty a) where
-    show (NonEmpty t xs) = show t <> show xs
+    show (NonEmpty x xs) = show x <> show xs
+    -- show (NonEmpty x xs) = show (append [x] xs)
 
 instance semiGroupNonEmpty :: Semigroup (NonEmpty a) where
-    append (NonEmpty t xs) (NonEmpty t' xs') = 
-        NonEmpty t (append xs (append [t'] xs'))
+    append (NonEmpty x xs) (NonEmpty y ys) = 
+        NonEmpty x (append xs (append [y] ys))
